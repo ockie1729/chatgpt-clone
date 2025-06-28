@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from chat_bot import get_user_input
+from chatgpt_clone.chat_bot import get_user_input
 
 
 class TestGetUserInput:

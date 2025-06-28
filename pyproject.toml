@@ -6,9 +6,13 @@ dependencies = [
     "langchain>=0.1.0",
     "langgraph>=0.0.40",
     "anthropic>=0.18.0",
+    "langchain-anthropic>=0.1.0",
     "python-dotenv>=1.0.0",
 ]
 requires-python = ">=3.8"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/chatgpt_clone"]
 
 [project.optional-dependencies]
 dev = [
