@@ -17,11 +17,19 @@ class ChatBot:
     
     def __init__(self):
         # ChatAnthropic インスタンスとワークフローグラフを初期化
-        pass
+        self.llm = None
+        self.graph = None
     
     def setup_llm(self):
         # Claude APIクライアントを設定し、APIキーの検証を行う
-        pass
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise ValueError("ANTHROPIC_API_KEY environment variable is required")
+        
+        self.llm = ChatAnthropic(
+            model="claude-3-sonnet-20240229",
+            api_key=api_key
+        )
     
     def create_graph(self):
         # LangGraphのワークフローを構築（ノード、エッジ、条件分岐を定義）
@@ -47,7 +55,11 @@ def generate_ai_response(state: Dict[str, Any]) -> Dict[str, Any]:
     # Claude APIにリクエストを送信し、レスポンスを取得
     # エラーハンドリングも含む
     # 戻り値: {"ai_response": str}
-    pass
+    llm = state["llm"]
+    user_input = state["user_input"]
+    
+    response = llm.invoke(user_input)
+    return {"ai_response": response.content}
 
 
 def display_response(state: Dict[str, Any]) -> Dict[str, Any]:
