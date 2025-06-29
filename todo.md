@@ -56,24 +56,32 @@
    - 戻り値: `CONTINUE_NODE`または`END`
    - テスト: 継続パターン、終了パターン
 
-### 🔄 未実装機能
-1. **generate_ai_response()** - Claude API通信
-   - Claude APIへのリクエスト送信
-   - レスポンス処理とエラーハンドリング
+5. **generate_ai_response()** - Claude API通信
+   - Claude APIへのリクエスト送信とレスポンス処理
+   - ユーザー入力を受け取り、LLMを呼び出してAI応答を生成
    - 戻り値: `{"ai_response": str}`
+   - テスト: モックLLMを使用した応答生成テスト
 
-2. **ChatBot.setup_llm()** - Claude API設定
+6. **ChatBot.setup_llm()** - Claude API設定
    - ChatAnthropic インスタンスの初期化
-   - APIキーの検証
+   - APIキーの環境変数読み込みと検証
+   - カスタム例外 `ApiKeyError` によるエラーハンドリング
+   - テスト: LLMインスタンス作成の確認
 
-3. **ChatBot.create_graph()** - LangGraphワークフロー構築
-   - ノードの登録とエッジの設定
+7. **ChatBot.create_graph()** - LangGraphワークフロー構築
+   - StateGraphによるワークフロー定義
+   - ノード登録: get_user_input, generate_ai_response, display_response
+   - エッジ設定: 条件分岐とループ処理
+   - テスト: グラフ作成とinvokeメソッド確認
 
-4. **ChatBot.run()** と **main()** - 実行部分
-   - グラフの実行開始とエントリーポイント
+8. **ChatBot.run()** と **main()** - 実行部分
+   - チャットボット初期化とグラフ実行
+   - エラーハンドリング: ApiKeyError, KeyboardInterrupt対応
+   - ユーザーフレンドリーなメッセージ表示
 
-### 📝 次回の実装計画
-1. TDDアプローチで`generate_ai_response()`の実装
-2. `ChatBot.setup_llm()`でClaude API設定
-3. `ChatBot.create_graph()`でワークフロー構築
-4. 全体の統合テスト
+### ✅ 実装完了
+**基本的なChatGPTクローンが完成しました！**
+- 全8テストが通過
+- TDDアプローチで段階的に実装
+- カスタム例外による適切なエラーハンドリング
+- LangGraphによる状態管理ワークフロー
