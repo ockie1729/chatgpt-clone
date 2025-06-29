@@ -70,3 +70,11 @@ class TestChatBot:
         
         assert chatbot.llm is not None
         assert hasattr(chatbot.llm, 'invoke')
+    
+    def test_create_graph_builds_workflow(self):
+        """create_graph()がLangGraphワークフローを構築することをテスト"""
+        chatbot = ChatBot()
+        chatbot.create_graph()
+        
+        assert chatbot.graph is not None
+        assert hasattr(chatbot.graph, 'invoke')

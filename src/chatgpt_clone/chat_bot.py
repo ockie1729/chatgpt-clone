@@ -12,6 +12,11 @@ load_dotenv()
 CONTINUE_NODE = "get_user_input"
 
 
+class ApiKeyError(Exception):
+    """API Keyが設定されていない、または無効な場合のエラー"""
+    pass
+
+
 class ChatBot:
     """チャットボットのメインクラス。LangGraphワークフローを管理する"""
     
@@ -24,7 +29,7 @@ class ChatBot:
         # Claude APIクライアントを設定し、APIキーの検証を行う
         api_key = os.getenv("ANTHROPIC_API_KEY")
         if not api_key:
-            raise ValueError("ANTHROPIC_API_KEY environment variable is required")
+            raise ApiKeyError("ANTHROPIC_API_KEY environment variable is not set")
         
         self.llm = ChatAnthropic(
             model="claude-3-sonnet-20240229",
@@ -33,11 +38,43 @@ class ChatBot:
     
     def create_graph(self):
         # LangGraphのワークフローを構築（ノード、エッジ、条件分岐を定義）
-        pass
+        workflow = StateGraph(dict)
+        
+        # ノードを追加
+        workflow.add_node("get_user_input", get_user_input)
+        workflow.add_node("generate_ai_response", generate_ai_response)
+        workflow.add_node("display_response", display_response)
+        
+        # エントリーポイントを設定
+        workflow.set_entry_point("get_user_input")
+        
+        # エッジを追加
+        workflow.add_conditional_edges(
+            "get_user_input",
+            should_continue,
+            {
+                CONTINUE_NODE: "generate_ai_response",
+                END: END
+            }
+        )
+        workflow.add_edge("generate_ai_response", "display_response")
+        workflow.add_edge("display_response", "get_user_input")
+        
+        self.graph = workflow.compile()
     
     def run(self):
         # チャットボットを開始し、メインループを実行
-        pass
+        self.setup_llm()
+        self.create_graph()
+        
+        print("ChatGPTクローンへようこそ！")
+        print("終了するには '/exit' と入力してください。")
+        
+        # 初期状態でllmを含める
+        initial_state = {"llm": self.llm}
+        
+        # グラフを実行
+        self.graph.invoke(initial_state)
 
 
 def get_user_input(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -80,7 +117,17 @@ def should_continue(state: Dict[str, Any]) -> str:
 def main():
     # プログラムのエントリーポイント
     # ChatBotインスタンスを作成して実行
-    pass
+    try:
+        chatbot = ChatBot()
+        chatbot.run()
+    except KeyboardInterrupt:
+        print("\n\nチャットボットを終了します。さようなら！")
+    except ApiKeyError as e:
+        print(f"\nAPI Key エラー: {e}")
+        print("環境変数 ANTHROPIC_API_KEY を設定してください。")
+    except Exception as e:
+        print(f"\n予期しないエラーが発生しました: {e}")
+        print("プログラムを終了します。")
 
 
 if __name__ == "__main__":
