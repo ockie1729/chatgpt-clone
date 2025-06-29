@@ -35,10 +35,11 @@ uv sync
 
 ### 3. 環境変数の設定
 
-`.env`ファイルを作成し、Anthropic API Keyを設定します：
+`.env.example`をコピーして`.env`ファイルを作成し、Anthropic API Keyを設定します：
 
 ```bash
-ANTHROPIC_API_KEY=your_api_key_here
+cp .env.example .env
+# .envファイルを編集してAPI Keyを設定
 ```
 
 ## 使用方法
