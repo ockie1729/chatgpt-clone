@@ -8,6 +8,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# 定数
+CONTINUE_NODE = "get_user_input"
+
 
 class ChatBot:
     """チャットボットのメインクラス。LangGraphワークフローを管理する"""
@@ -50,13 +53,16 @@ def generate_ai_response(state: Dict[str, Any]) -> Dict[str, Any]:
 def display_response(state: Dict[str, Any]) -> Dict[str, Any]:
     # AIの応答をターミナルに表示
     # 戻り値: state（変更なし）
-    pass
+    print(f"\nAI: {state['ai_response']}")
+    return state
 
 
 def should_continue(state: Dict[str, Any]) -> str:
     # 会話を続けるかどうかを判定
     # 戻り値: "get_user_input" または END
-    pass
+    if state["should_exit"]:
+        return END
+    return CONTINUE_NODE
 
 
 def main():
